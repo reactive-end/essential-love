@@ -1,11 +1,17 @@
-import { StatusBar } from 'expo-status-bar'
-import { View, Text } from 'react-native'
+import { Stack } from 'expo-router'
+import { SafeAreaProvider } from 'react-native-safe-area-context'
+import AuthProvider from '@context/AuthContext'
 
 export default function Layout () {
   return (
-    <View className='flex flex-grow items-center justify-center bg-slate-50'>
-      <StatusBar />
-      <Text>Hello World!</Text>
-    </View>
+    <AuthProvider>
+      <SafeAreaProvider>
+        <Stack screenOptions={{
+          headerShown: false,
+          animation: 'fade_from_bottom'
+        }}
+        />
+      </SafeAreaProvider>
+    </AuthProvider>
   )
 }
