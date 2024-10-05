@@ -1,6 +1,6 @@
 import axios from 'axios'
 
-class ApiService {
+class APIService {
   constructor (baseURL) {
     this.api = axios.create({
       baseURL,
@@ -74,4 +74,4 @@ class ApiService {
   }
 }
 
-export default ApiService
+export default APIService

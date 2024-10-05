@@ -10,7 +10,8 @@
           "@utils": "./src/utils",
           "@service": "./src/service",
           "@hooks": "./src/hooks",
-          "@context": "./src/context"
+          "@context": "./src/context",
+          "@components": "./src/components"
         }
       }
     ]
