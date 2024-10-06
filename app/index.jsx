@@ -1,29 +1,52 @@
-import { ImageBackground, Pressable, Text, TextInput, View } from 'react-native'
+import { ImageBackground, Pressable, Text, TextInput, View, Alert } from 'react-native'
 import { Link, router } from 'expo-router'
 import { useContext, useState } from 'react'
-import { AuthContext } from '@context/AuthContext'
+
+// Context
+import { AuthContext, AppContext } from '@context/Context'
 
 // Images
 import Background from '@assets/background/3.jpg'
 
-// Utils - Hooks
+// Utils
 import i18n from '@utils/i18n'
 import login from '@utils/login'
 
 // Components
 import Screen from '@components/Screen'
+import LoadingModal from '@components/LoadingModal'
 
 export default function Index () {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [showModal, setShowModal] = useState(false)
   const { authorize } = useContext(AuthContext)
+  const { selectedLang, selectedCharacter } = useContext(AppContext)
 
-  function handleLogin () {
-    const authorized = login(email, password)
-    authorize()
+  async function handleLogin () {
+    setShowModal(true)
+    const authorized = await login(email, password)
+    setShowModal(false)
 
     if (authorized) {
-      router.navigate('/lang/langSelection')
+      authorize()
+      if (selectedLang) {
+        if (selectedCharacter) {
+          router.navigate('/home/')
+        } else {
+          router.navigate('/characters/characterSelection')
+        }
+      } else {
+        router.navigate('/lang/langSelection')
+      }
+    } else {
+      Alert.alert('Error!', i18n('An error occurred while trying to log in, please verify your credentials or try again later.'),
+        [
+          {
+            text: i18n('Close'),
+            style: 'cancel'
+          }
+        ])
     }
   }
 
@@ -59,6 +82,8 @@ export default function Index () {
           </View>
         </View>
       </ImageBackground>
+
+      <LoadingModal showModal={showModal} />
     </Screen>
   )
 }

@@ -1,4 +1,4 @@
-import { ImageBackground, Pressable, Text, TextInput, View } from 'react-native'
+import { ImageBackground, Pressable, Text, TextInput, View, Alert } from 'react-native'
 import { Link, router } from 'expo-router'
 import { useState } from 'react'
 
@@ -13,18 +13,30 @@ import register from '@utils/register'
 
 // Components
 import Screen from '@components/Screen'
+import LoadingModal from '@components/LoadingModal'
 
 export default function Index () {
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [phone, setPhone] = useState('')
+  const [showModal, setShowModal] = useState(false)
 
   const handleReg = async () => {
+    setShowModal(true)
     const response = await register(name, password, email, phone)
+    setShowModal(false)
 
     if (response) {
       router.navigate('/')
+    } else {
+      Alert.alert('Error!', i18n('An error occurred while trying to sign up, please try again later.'),
+        [
+          {
+            text: i18n('Close'),
+            style: 'cancel'
+          }
+        ])
     }
   }
 
@@ -65,6 +77,8 @@ export default function Index () {
           </View>
         </View>
       </ImageBackground>
+
+      <LoadingModal showModal={showModal} />
     </Screen>
   )
 }

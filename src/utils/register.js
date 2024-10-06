@@ -8,7 +8,12 @@ const register = async (username, password, email, phone) => {
   const api = new APIService(API_URL)
   const localStorage = new LocalStorage()
   const auth = new AuthService(api, localStorage)
-  const response = await auth.register(username, password, email, phone)
+  const response = await auth.register(
+    username.trim(),
+    password.trim(),
+    email.trim(),
+    phone.trim()
+  )
 
   return response.success
 }

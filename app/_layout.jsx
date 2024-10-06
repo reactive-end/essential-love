@@ -9,7 +9,7 @@ export default function Layout () {
     <AppProvider>
       <AuthProvider>
         <SafeAreaProvider>
-          <StatusBar backgroundColor='#a855f7' style='light' />
+          <StatusBar style='auto' />
           <Stack screenOptions={{
             headerShown: false,
             animation: 'fade_from_bottom'

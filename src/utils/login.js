@@ -8,7 +8,10 @@ const login = async (username, password) => {
   const api = new APIService(API_URL)
   const localStorage = new LocalStorage()
   const auth = new AuthService(api, localStorage)
-  const response = await auth.login(username, password)
+  const response = await auth.login(
+    username.trim(),
+    password.trim()
+  )
 
   return response.success
 }
