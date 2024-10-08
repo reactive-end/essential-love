@@ -7,6 +7,7 @@ const localStorage = new LocalStorage()
 export default function AuthProvider ({ children }) {
   const [lang, setLang] = useState('en')
   const [character, setCharacter] = useState(null)
+  const [characters, setCharacters] = useState([])
   const [selectedLang, setSelectedLang] = useState(false)
   const [selectedCharacter, setSelectedCharacter] = useState(false)
 
@@ -31,6 +32,11 @@ export default function AuthProvider ({ children }) {
       if (dataSelectedCharacter !== null) {
         setSelectedCharacter(dataSelectedCharacter)
       }
+
+      const dataCharacters = await localStorage.getItem('characters')
+      if (dataCharacters !== null) {
+        setCharacters(dataCharacters)
+      }
     }
 
     fetchData()
@@ -54,8 +60,15 @@ export default function AuthProvider ({ children }) {
     await localStorage.setItem('selectedCharacter', true)
   }
 
+  const configCharacters = async (value) => {
+    if (value === null) return
+    setCharacters(value)
+
+    await localStorage.setItem('characters', value)
+  }
+
   return (
-    <AppContext.Provider value={{ lang, character, configLang, configCharacter, selectedLang, selectedCharacter }}>
+    <AppContext.Provider value={{ lang, character, characters, configLang, configCharacter, configCharacters, selectedLang, selectedCharacter }}>
       {children}
     </AppContext.Provider>
   )

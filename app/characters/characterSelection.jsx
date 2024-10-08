@@ -1,7 +1,6 @@
-import { Text, ScrollView, View } from 'react-native'
-import { LinearGradient } from 'expo-linear-gradient'
-import { useEffect, useContext } from 'react'
-import { router } from 'expo-router'
+import { ScrollView, ImageBackground } from 'react-native'
+import { useEffect, useContext, useState } from 'react'
+import { Stack, router } from 'expo-router'
 
 // Hooks
 import useAuthed from '@hooks/useAuthed'
@@ -12,16 +11,14 @@ import Screen from '@components/Screen'
 import Carrousel from '@components/Carrousel'
 import LoadingModal from '@components/LoadingModal'
 
-// Utils
-import i18n from '@utils/i18n'
-
 // Context
 import { AppContext } from '@context/Context'
 
 export default function CharacterSelection () {
   useAuthed()
+  const [background, setBackground] = useState('')
   const { characters, isLoading } = useCharacters()
-  const { selectedCharacter, configCharacter } = useContext(AppContext)
+  const { selectedCharacter, configCharacter, configCharacters } = useContext(AppContext)
 
   useEffect(() => {
     if (selectedCharacter) {
@@ -29,29 +26,40 @@ export default function CharacterSelection () {
     }
   }, [])
 
+  useEffect(() => {
+    if (background === '' && characters.length > 0) {
+      setBackground(characters[0].images.select)
+
+      configCharacters(characters)
+    }
+  }, [characters])
+
   const handleSelect = async (value) => {
     configCharacter(value)
     router.navigate('/home/')
   }
 
+  const configBackground = (value) => {
+    setBackground(value)
+  }
+
   return (
     <Screen>
-      <LinearGradient colors={['transparent', '#a855f7']} className='flex-grow'>
-        <ScrollView className='flex-grow'>
-          <View className='flex-grow justify-center'>
-            <Text className='text-slate-900 text-center text-3xl py-4'>
-              {i18n('Character Selection')}
-            </Text>
-            <View className='flex-grow justify-center items-center'>
-              {
-                isLoading
-                  ? <LoadingModal />
-                  : <Carrousel data={characters} cardHandler={handleSelect} />
-              }
-            </View>
-          </View>
+      <Stack.Screen
+        options={{
+          statusBarColor: '#000',
+          statusBarStyle: 'light'
+        }}
+      />
+      <ImageBackground source={{ uri: `data:image/png;base64,${background}` }} className='flex-grow'>
+        <ScrollView contentContainerStyle={{ flexGrow: 1, justifyContent: 'center' }}>
+          {
+            isLoading
+              ? <LoadingModal />
+              : <Carrousel data={characters} cardHandler={handleSelect} backgroundHandler={configBackground} />
+          }
         </ScrollView>
-      </LinearGradient>
+      </ImageBackground>
     </Screen>
   )
 }
